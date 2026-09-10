@@ -9,5 +9,5 @@
     "keywords": [],
     "author": "Guilherme Bigois",
     "license": "ISC",
-    "type": "commonjs"
+    "type": "module"
 }
