@@ -1,13 +1,25 @@
 {
-    "name": "express",
+    "name": "express-101",
     "version": "1.0.0",
-    "description": "",
+    "description": "Study project for Alura and Mimo's Express courses",
     "main": "index.js",
     "scripts": {
+        "start": "node index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "keywords": [],
-    "author": "Guilherme Bigois",
+    "keywords": [
+        "nodejs",
+        "express",
+        "alura",
+        "mimo",
+        "study"
+    ],
+    "author": "Guilherme Bigois <guilherme.bigois@organacode.com.br>",
+    "homepage": "https://www.linkedin.com/in/bigois",
     "license": "ISC",
-    "type": "module"
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/bigois/express-101.git"
+    }
 }
