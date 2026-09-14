@@ -7,6 +7,9 @@ import books from "../data/books.json" with { type: "json" };
 // Create an instance of an Express application
 const app = express();
 
+// Middleware to parse incoming JSON requests
+app.use(express.json());
+
 // Define HTTP status codes
 const HTTP_OK = 200;
 const HTTP_NOT_FOUND = 404;
@@ -20,7 +23,6 @@ const createBaseResponse = (req, res, message, detail) => ({
     ...(detail !== undefined && { detail })
 });
 
-
 // Define a route for the root URL ("/")
 app.get("/", (req, res) => {
     res.status(HTTP_OK)
@@ -33,6 +35,20 @@ app.get("/books", (req, res) => {
     res.status(HTTP_OK)
         .type("application/json")
         .json(createBaseResponse(req, res, "Books retrieved successfully", books));
+});
+
+// Define a route for creating a new book
+app.post("/books", (req, res) => {
+    // Extract the new book data from the request body
+    const newBook = req.body;
+    const newBookId = books.at(-1).id + 1;
+
+    // Add the new book to the books array
+    books.push({ id: newBookId, ...newBook });
+
+    res.status(HTTP_OK)
+        .type("application/json")
+        .json(createBaseResponse(req, res, "Book successfully created"));
 });
 
 // Handle 404 errors for undefined routes
