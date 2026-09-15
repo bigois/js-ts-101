@@ -1,0 +1,44 @@
+[
+    {
+        "title": "Harry Potter and the Philosopher's Stone",
+        "author": "J. K. Rowling",
+        "publicationYear": 1997,
+        "pages": 223,
+        "available": true
+    },
+    {
+        "title": "The Fellowship of the Ring",
+        "author": "J. R. R. Tolkien",
+        "publicationYear": 1954,
+        "pages": 423,
+        "available": true
+    },
+    {
+        "title": "The Da Vinci Code",
+        "author": "Dan Brown",
+        "publicationYear": 2003,
+        "pages": 489,
+        "available": false
+    },
+    {
+        "title": "The Hobbit",
+        "author": "J. R. R. Tolkien",
+        "publicationYear": 1937,
+        "pages": 310,
+        "available": true
+    },
+    {
+        "title": "Angels & Demons",
+        "author": "Dan Brown",
+        "publicationYear": 2000,
+        "pages": 616,
+        "available": true
+    },
+    {
+        "title": "The Chronicles of Narnia: The Lion, the Witch and the Wardrobe",
+        "author": "C. S. Lewis",
+        "publicationYear": 1950,
+        "pages": 208,
+        "available": true
+    }
+]
