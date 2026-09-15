@@ -42,11 +42,11 @@ app.get("/books", (req, res) => {
 // Define a route for retrieving a single book by its ID
 app.get("/books/:id", (req, res) => {
     // Get the book by its ID from the books array
-    const bookId = parseInt(req.params.id);
+    const bookId = Number(req.params.id);
     const book = books.find(b => b.id === bookId);
 
     // Check if the book exists before attempting to return it
-    if (book) {
+    if (Number.isInteger(bookId) && book) {
         res.status(HTTP_OK)
             .type("application/json")
             .json(createBaseResponse(req, res, "Book retrieved successfully", book));
@@ -74,11 +74,11 @@ app.post("/books", (req, res) => {
 // Define a route for updating an existing book by its ID
 app.put("/books/:id", (req, res) => {
     // Get the book index by its ID from the books array
-    const bookId = parseInt(req.params.id);
+    const bookId = Number(req.params.id);
     const bookIndex = books.findIndex(b => b.id === bookId);
 
     // Check if the book exists before attempting to update it
-    if (bookIndex !== -1) {
+    if (Number.isInteger(bookId) && bookIndex !== -1) {
         // Extract the book data from the request body, excluding the ID since it should not be updated directly
         const { id: _id, ...book } = req.body;
         books[bookIndex] = { id: bookId, ...book };
@@ -96,11 +96,11 @@ app.put("/books/:id", (req, res) => {
 // Define a route for deleting an existing book by its ID
 app.delete("/books/:id", (req, res) => {
     // Get the book index by its ID from the books array
-    const bookId = parseInt(req.params.id);
+    const bookId = Number(req.params.id);
     const bookIndex = books.findIndex(b => b.id === bookId);
 
     // Check if the book exists before attempting to delete it
-    if (bookIndex !== -1) {
+    if (Number.isInteger(bookId) && bookIndex !== -1) {
         const deletedBook = books.splice(bookIndex, 1)[0]; // [0] returns deletedBook instead of an array containing it
         res.status(HTTP_OK)
             .type("application/json")
