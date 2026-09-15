@@ -1,6 +1,6 @@
 [
     {
-        "id": 1,
+        "_id": 1,
         "title": "Harry Potter and the Philosopher's Stone",
         "author": "J. K. Rowling",
         "publicationYear": 1997,
@@ -8,7 +8,7 @@
         "available": true
     },
     {
-        "id": 2,
+        "_id": 2,
         "title": "The Fellowship of the Ring",
         "author": "J. R. R. Tolkien",
         "publicationYear": 1954,
@@ -16,7 +16,7 @@
         "available": true
     },
     {
-        "id": 3,
+        "_id": 3,
         "title": "The Da Vinci Code",
         "author": "Dan Brown",
         "publicationYear": 2003,
@@ -24,7 +24,7 @@
         "available": false
     },
     {
-        "id": 4,
+        "_id": 4,
         "title": "The Hobbit",
         "author": "J. R. R. Tolkien",
         "publicationYear": 1937,
@@ -32,7 +32,7 @@
         "available": true
     },
     {
-        "id": 5,
+        "_id": 5,
         "title": "Angels & Demons",
         "author": "Dan Brown",
         "publicationYear": 2000,
@@ -40,7 +40,7 @@
         "available": true
     },
     {
-        "id": 6,
+        "_id": 6,
         "title": "The Chronicles of Narnia: The Lion, the Witch and the Wardrobe",
         "author": "C. S. Lewis",
         "publicationYear": 1950,
