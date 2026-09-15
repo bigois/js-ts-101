@@ -2,6 +2,7 @@
 import express from "express"; // Express module
 import books from "../data/books.json" with { type: "json" }; // Import data from the JSON file
 import connectDatabase from "../config/dbConnect.js"; // Database connection module
+import Book from "../model/Book.js"; // Mongoose model for the Book schema
 
 // Establish a connection to the database and handle connection events
 const connection = await connectDatabase();
@@ -48,9 +49,10 @@ app.get("/", (req, res) => {
 });
 
 // Define a route for retrieving all books
-app.get("/books", (req, res) => {
+app.get("/books", async (req, res) => {
+    const mongoBooks = await Book.find();
     res.status(HTTP_OK)
-        .json(createBaseResponse(req, res, "Books retrieved successfully", books));
+        .json(createBaseResponse(req, res, "Books retrieved successfully", mongoBooks));
 });
 
 // Define a route for retrieving a single book by its ID
