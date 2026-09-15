@@ -12,6 +12,7 @@ app.use(express.json());
 
 // Define HTTP status codes
 const HTTP_OK = 200;
+const HTTP_CREATED = 201;
 const HTTP_NOT_FOUND = 404;
 
 // Create a base response structure for API responses
@@ -46,9 +47,9 @@ app.post("/books", (req, res) => {
     // Add the new book to the books array
     books.push({ id: newBookId, ...newBook });
 
-    res.status(HTTP_OK)
+    res.status(HTTP_CREATED)
         .type("application/json")
-        .json(createBaseResponse(req, res, "Book successfully created"));
+        .json(createBaseResponse(req, res, "Book successfully created", books.at(-1)));
 });
 
 // Handle 404 errors for undefined routes
