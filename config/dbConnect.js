@@ -1,5 +1,5 @@
-// Import the Mongoose module and configure the database connection
-import mongoose, { mongo } from "mongoose";
+// Import necessary modules
+import mongoose from "mongoose"; // Mongoose module
 
 // Database connection configuration
 const password = encodeURIComponent(process.env.DB_PASSWORD);
