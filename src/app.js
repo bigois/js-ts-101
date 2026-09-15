@@ -25,6 +25,15 @@ const createBaseResponse = (req, res, message, details) => ({
     ...(details !== undefined && { details })
 });
 
+const isValidBook = (book) =>
+    book &&
+    typeof book === "object" && !Array.isArray(book) &&
+    typeof book.title === "string" && book.title.trim().length > 0 &&
+    typeof book.author === "string" && book.author.trim().length > 0 &&
+    Number.isInteger(book.publicationYear) && book.publicationYear > 0 &&
+    Number.isInteger(book.pages) && book.pages > 0 &&
+    typeof book.available === "boolean";
+
 // Define a route for the root URL ("/")
 app.get("/", (req, res) => {
     res.status(HTTP_OK)
@@ -61,6 +70,11 @@ app.get("/books/:id", (req, res) => {
 
 // Define a route for creating a new book
 app.post("/books", (req, res) => {
+    if (!isValidBook(req.body)) {
+        return res.status(HTTP_BAD_REQUEST)
+            .json(createBaseResponse(req, res, "Invalid book data"));
+    }
+
     // Extract the new book data from the request body
     const { id: _id, ...newBook } = req.body;
     const newBookId = Math.max(0, ...books.map(book => book.id)) + 1;
@@ -86,6 +100,11 @@ app.put("/books/:id", (req, res) => {
 
     // Check if the book exists before attempting to update it
     if (bookIndex !== -1) {
+        if (!isValidBook(req.body)) {
+            return res.status(HTTP_BAD_REQUEST)
+                .json(createBaseResponse(req, res, "Invalid book data"));
+        }
+
         // Extract the book data from the request body, excluding the ID since it should not be updated directly
         const { id: _id, ...book } = req.body;
         books[bookIndex] = { id: bookId, ...book };
