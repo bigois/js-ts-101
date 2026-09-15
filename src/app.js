@@ -1,8 +1,16 @@
 // Import necessary modules
 import express from "express"; // Express module
+import books from "../data/books.json" with { type: "json" }; // Import data from the JSON file
+import connectDatabase from "../config/dbConnect.js"; // Database connection module
 
-// Import data from the JSON file
-import books from "../data/books.json" with { type: "json" };
+// Establish a connection to the database and handle connection events
+const connection = await connectDatabase();
+connection.on("error", (err) => {
+    console.error("Database connection error:", err);
+});
+connection.once("open", () => {
+    console.log("Database connection established successfully");
+});
 
 // Create an instance of an Express application and add middleware for parsing JSON requests
 const app = express();
