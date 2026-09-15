@@ -38,6 +38,24 @@ app.get("/books", (req, res) => {
         .json(createBaseResponse(req, res, "Books retrieved successfully", books));
 });
 
+// Define a route for retrieving a single book by its ID
+app.get("/books/:id", (req, res) => {
+    // Get the book by its ID from the books array
+    const bookId = parseInt(req.params.id);
+    const book = books.find(b => b.id === bookId);
+
+    // Check if the book exists before attempting to return it
+    if (book) {
+        res.status(HTTP_OK)
+            .type("application/json")
+            .json(createBaseResponse(req, res, "Book retrieved successfully", book));
+    } else {
+        res.status(HTTP_NOT_FOUND)
+            .type("application/json")
+            .json(createBaseResponse(req, res, "Book not found"));
+    }
+});
+
 // Define a route for creating a new book
 app.post("/books", (req, res) => {
     // Extract the new book data from the request body
