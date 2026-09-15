@@ -70,6 +70,25 @@ app.post("/books", (req, res) => {
         .json(createBaseResponse(req, res, "Book successfully created", books.at(-1)));
 });
 
+// Define a route for updating an existing book by its ID
+app.put("/books/:id", (req, res) => {
+    // Get the book index by its ID from the books array
+    const bookId = parseInt(req.params.id);
+    const bookIndex = books.findIndex(b => b.id === bookId);
+
+    // Check if the book exists before attempting to update it
+    if (bookIndex !== -1) {
+        books[bookIndex] = { id: bookId, ...req.body };
+        res.status(HTTP_OK)
+            .type("application/json")
+            .json(createBaseResponse(req, res, "Book successfully updated", books[bookIndex]));
+    } else {
+        res.status(HTTP_NOT_FOUND)
+            .type("application/json")
+            .json(createBaseResponse(req, res, "Book not found"));
+    }
+});
+
 // Handle 404 errors for undefined routes
 app.use((req, res) => {
     res.status(HTTP_NOT_FOUND)
