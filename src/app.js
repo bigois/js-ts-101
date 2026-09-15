@@ -1,13 +1,11 @@
-// Import the Express module
-import express from "express";
+// Import necessary modules
+import express from "express"; // Express module
 
 // Import data from the JSON file
 import books from "../data/books.json" with { type: "json" };
 
-// Create an instance of an Express application
+// Create an instance of an Express application and add middleware for parsing JSON requests
 const app = express();
-
-// Middleware to parse incoming JSON requests
 app.use(express.json());
 
 // Define HTTP status codes
@@ -25,6 +23,7 @@ const createBaseResponse = (req, res, message, details) => ({
     ...(details !== undefined && { details })
 });
 
+// Validate the structure and content of a book object
 const isValidBook = (book) =>
     book &&
     typeof book === "object" && !Array.isArray(book) &&
@@ -51,6 +50,7 @@ app.get("/books/:id", (req, res) => {
     // Get the book by its ID from the books array
     const bookId = Number(req.params.id);
 
+    // Validate the book ID before proceeding
     if (!Number.isInteger(bookId)) {
         return res.status(HTTP_BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book ID"));
@@ -70,6 +70,7 @@ app.get("/books/:id", (req, res) => {
 
 // Define a route for creating a new book
 app.post("/books", (req, res) => {
+    // Validate the incoming book data before proceeding
     if (!isValidBook(req.body)) {
         return res.status(HTTP_BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book data"));
@@ -91,15 +92,16 @@ app.put("/books/:id", (req, res) => {
     // Get the book index by its ID from the books array
     const bookId = Number(req.params.id);
 
+    // Validate the book ID before proceeding with the update
     if (!Number.isInteger(bookId)) {
         return res.status(HTTP_BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
-    const bookIndex = books.findIndex(b => b.id === bookId);
-
     // Check if the book exists before attempting to update it
+    const bookIndex = books.findIndex(b => b.id === bookId);
     if (bookIndex !== -1) {
+        // Validate the incoming book data before updating the existing book
         if (!isValidBook(req.body)) {
             return res.status(HTTP_BAD_REQUEST)
                 .json(createBaseResponse(req, res, "Invalid book data"));
@@ -127,9 +129,8 @@ app.delete("/books/:id", (req, res) => {
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
-    const bookIndex = books.findIndex(b => b.id === bookId);
-
     // Check if the book exists before attempting to delete it
+    const bookIndex = books.findIndex(b => b.id === bookId);
     if (bookIndex !== -1) {
         const deletedBook = books.splice(bookIndex, 1)[0]; // [0] returns deletedBook instead of an array containing it
         res.status(HTTP_OK)
