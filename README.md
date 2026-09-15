@@ -83,3 +83,7 @@ Responses are JSON and follow this structure:
 | `DELETE` | `/books/:id` | Deletes a book from the JSON data loaded in memory. |
 
 Unknown routes return `404` in the same response format.
+
+## License
+
+This project is licensed under the [MIT License](https://github.com/bigois/express-101/blob/main/LICENSE).
