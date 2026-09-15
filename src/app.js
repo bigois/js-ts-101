@@ -89,6 +89,25 @@ app.put("/books/:id", (req, res) => {
     }
 });
 
+// Define a route for deleting an existing book by its ID
+app.delete("/books/:id", (req, res) => {
+    // Get the book index by its ID from the books array
+    const bookId = parseInt(req.params.id);
+    const bookIndex = books.findIndex(b => b.id === bookId);
+
+    // Check if the book exists before attempting to delete it
+    if (bookIndex !== -1) {
+        const deletedBook = books.splice(bookIndex, 1)[0]; // [0] returns deletedBook instead of an array containing it
+        res.status(HTTP_OK)
+            .type("application/json")
+            .json(createBaseResponse(req, res, "Book successfully deleted", deletedBook));
+    } else {
+        res.status(HTTP_NOT_FOUND)
+            .type("application/json")
+            .json(createBaseResponse(req, res, "Book not found"));
+    }
+});
+
 // Handle 404 errors for undefined routes
 app.use((req, res) => {
     res.status(HTTP_NOT_FOUND)
