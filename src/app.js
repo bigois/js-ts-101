@@ -15,12 +15,12 @@ const HTTP_OK = 200;
 const HTTP_NOT_FOUND = 404;
 
 // Create a base response structure for API responses
-const createBaseResponse = (req, res, message, detail) => ({
+const createBaseResponse = (req, res, message, details) => ({
     timestamp: new Date().toISOString(),
     path: req.originalUrl,
     status: res.statusCode,
     message,
-    ...(detail !== undefined && { detail })
+    ...(details !== undefined && { details })
 });
 
 // Define a route for the root URL ("/")
