@@ -60,7 +60,7 @@ app.get("/books/:id", (req, res) => {
 // Define a route for creating a new book
 app.post("/books", (req, res) => {
     // Extract the new book data from the request body
-    const newBook = req.body;
+    const { id: _id, ...newBook } = req.body;
     booksLength++;
 
     // Add the new book to the books array
@@ -79,7 +79,10 @@ app.put("/books/:id", (req, res) => {
 
     // Check if the book exists before attempting to update it
     if (bookIndex !== -1) {
-        books[bookIndex] = { id: bookId, ...req.body };
+        // Extract the book data from the request body, excluding the ID since it should not be updated directly
+        const { id: _id, ...book } = req.body;
+        books[bookIndex] = { id: bookId, ...book };
+
         res.status(HTTP_OK)
             .type("application/json")
             .json(createBaseResponse(req, res, "Book successfully updated", books[bookIndex]));
