@@ -28,14 +28,12 @@ const createBaseResponse = (req, res, message, details) => ({
 // Define a route for the root URL ("/")
 app.get("/", (req, res) => {
     res.status(HTTP_OK)
-        .type("application/json")
         .json(createBaseResponse(req, res, "Welcome!"));
 });
 
 // Define a route for retrieving all books
 app.get("/books", (req, res) => {
     res.status(HTTP_OK)
-        .type("application/json")
         .json(createBaseResponse(req, res, "Books retrieved successfully", books));
 });
 
@@ -46,7 +44,6 @@ app.get("/books/:id", (req, res) => {
 
     if (!Number.isInteger(bookId)) {
         return res.status(HTTP_BAD_REQUEST)
-            .type("application/json")
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
@@ -55,11 +52,9 @@ app.get("/books/:id", (req, res) => {
     // Check if the book exists before attempting to return it
     if (book) {
         res.status(HTTP_OK)
-            .type("application/json")
             .json(createBaseResponse(req, res, "Book retrieved successfully", book));
     } else {
         res.status(HTTP_NOT_FOUND)
-            .type("application/json")
             .json(createBaseResponse(req, res, "Book not found"));
     }
 });
@@ -74,7 +69,6 @@ app.post("/books", (req, res) => {
     books.push({ id: newBookId, ...newBook });
 
     res.status(HTTP_CREATED)
-        .type("application/json")
         .json(createBaseResponse(req, res, "Book successfully created", books.at(-1)));
 });
 
@@ -85,7 +79,6 @@ app.put("/books/:id", (req, res) => {
 
     if (!Number.isInteger(bookId)) {
         return res.status(HTTP_BAD_REQUEST)
-            .type("application/json")
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
@@ -98,11 +91,9 @@ app.put("/books/:id", (req, res) => {
         books[bookIndex] = { id: bookId, ...book };
 
         res.status(HTTP_OK)
-            .type("application/json")
             .json(createBaseResponse(req, res, "Book successfully updated", books[bookIndex]));
     } else {
         res.status(HTTP_NOT_FOUND)
-            .type("application/json")
             .json(createBaseResponse(req, res, "Book not found"));
     }
 });
@@ -114,7 +105,6 @@ app.delete("/books/:id", (req, res) => {
 
     if (!Number.isInteger(bookId)) {
         return res.status(HTTP_BAD_REQUEST)
-            .type("application/json")
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
@@ -124,11 +114,9 @@ app.delete("/books/:id", (req, res) => {
     if (bookIndex !== -1) {
         const deletedBook = books.splice(bookIndex, 1)[0]; // [0] returns deletedBook instead of an array containing it
         res.status(HTTP_OK)
-            .type("application/json")
             .json(createBaseResponse(req, res, "Book successfully deleted", deletedBook));
     } else {
         res.status(HTTP_NOT_FOUND)
-            .type("application/json")
             .json(createBaseResponse(req, res, "Book not found"));
     }
 });
@@ -136,7 +124,6 @@ app.delete("/books/:id", (req, res) => {
 // Handle 404 errors for undefined routes
 app.use((req, res) => {
     res.status(HTTP_NOT_FOUND)
-        .type("application/json")
         .json(createBaseResponse(req, res, "Not Found"));
 });
 
