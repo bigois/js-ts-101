@@ -3,7 +3,6 @@ import express from "express";
 
 // Import data from the JSON file
 import books from "../data/books.json" with { type: "json" };
-let booksLength = books.length;
 
 // Create an instance of an Express application
 const app = express();
@@ -61,10 +60,10 @@ app.get("/books/:id", (req, res) => {
 app.post("/books", (req, res) => {
     // Extract the new book data from the request body
     const { id: _id, ...newBook } = req.body;
-    booksLength++;
+    const newBookId = Math.max(0, ...books.map(book => book.id)) + 1;
 
     // Add the new book to the books array
-    books.push({ id: booksLength, ...newBook });
+    books.push({ id: newBookId, ...newBook });
 
     res.status(HTTP_CREATED)
         .type("application/json")
