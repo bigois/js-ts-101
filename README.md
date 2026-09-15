@@ -2,6 +2,10 @@
 
 This repository contains practical study examples from Alura and Mimo Express courses. It covers HTTP servers, routes, middleware, and a book API built with Node.js.
 
+## Purpose
+
+Serve as a personal learning reference that evolves as the courses progress, with room for new routes, middleware, and API examples.
+
 ## Stack
 
 - Node.js
@@ -79,7 +83,3 @@ Responses are JSON and follow this structure:
 | `DELETE` | `/books/:id` | Deletes a book from the JSON data loaded in memory. |
 
 Unknown routes return `404` in the same response format.
-
-## Purpose
-
-Serve as a personal learning reference that evolves as the courses progress, with room for new routes, middleware, and API examples.
