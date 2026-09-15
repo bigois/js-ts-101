@@ -13,6 +13,7 @@ app.use(express.json());
 // Define HTTP status codes
 const HTTP_OK = 200;
 const HTTP_CREATED = 201;
+const HTTP_BAD_REQUEST = 400;
 const HTTP_NOT_FOUND = 404;
 
 // Create a base response structure for API responses
@@ -42,10 +43,17 @@ app.get("/books", (req, res) => {
 app.get("/books/:id", (req, res) => {
     // Get the book by its ID from the books array
     const bookId = Number(req.params.id);
+
+    if (!Number.isInteger(bookId)) {
+        return res.status(HTTP_BAD_REQUEST)
+            .type("application/json")
+            .json(createBaseResponse(req, res, "Invalid book ID"));
+    }
+
     const book = books.find(b => b.id === bookId);
 
     // Check if the book exists before attempting to return it
-    if (Number.isInteger(bookId) && book) {
+    if (book) {
         res.status(HTTP_OK)
             .type("application/json")
             .json(createBaseResponse(req, res, "Book retrieved successfully", book));
@@ -74,10 +82,17 @@ app.post("/books", (req, res) => {
 app.put("/books/:id", (req, res) => {
     // Get the book index by its ID from the books array
     const bookId = Number(req.params.id);
+
+    if (!Number.isInteger(bookId)) {
+        return res.status(HTTP_BAD_REQUEST)
+            .type("application/json")
+            .json(createBaseResponse(req, res, "Invalid book ID"));
+    }
+
     const bookIndex = books.findIndex(b => b.id === bookId);
 
     // Check if the book exists before attempting to update it
-    if (Number.isInteger(bookId) && bookIndex !== -1) {
+    if (bookIndex !== -1) {
         // Extract the book data from the request body, excluding the ID since it should not be updated directly
         const { id: _id, ...book } = req.body;
         books[bookIndex] = { id: bookId, ...book };
@@ -96,10 +111,17 @@ app.put("/books/:id", (req, res) => {
 app.delete("/books/:id", (req, res) => {
     // Get the book index by its ID from the books array
     const bookId = Number(req.params.id);
+
+    if (!Number.isInteger(bookId)) {
+        return res.status(HTTP_BAD_REQUEST)
+            .type("application/json")
+            .json(createBaseResponse(req, res, "Invalid book ID"));
+    }
+
     const bookIndex = books.findIndex(b => b.id === bookId);
 
     // Check if the book exists before attempting to delete it
-    if (Number.isInteger(bookId) && bookIndex !== -1) {
+    if (bookIndex !== -1) {
         const deletedBook = books.splice(bookIndex, 1)[0]; // [0] returns deletedBook instead of an array containing it
         res.status(HTTP_OK)
             .type("application/json")
