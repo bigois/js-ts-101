@@ -48,8 +48,6 @@ npm install
 npm run dev
 ```
 
-The API setup, environment requirements, and routes are documented in [express/README.md](express/README.md).
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
