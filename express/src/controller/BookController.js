@@ -57,25 +57,16 @@ class BookController {
     // Update an existing book in the database
     static async update(req, res) {
         try {
-            // Try to find the corresponding book in the database
+            // Extract the book data from the request body, excluding the ID since it should not be updated directly
             const bookId = req.params.id;
-            const book = /** @type {import("mongoose").HydratedDocument<{
-         title: string,
-         author: string,
-         publicationYear: number,
-         pages: number,
-         available: boolean
-         }> | null} */ await Book.findById(bookId);
+            const { title, author, publicationYear, pages, available } = req.body;
 
-            // Check if the book exists before attempting to update it
-            if (book) {
-                // Extract the book data from the request body, excluding the ID since it should not be updated directly
-                const { title, author, publicationYear, pages, available } = req.body;
+            // Try to find and update the corresponding book in the database
+            const updatedBook = await Book.findByIdAndUpdate(bookId, { title, author, publicationYear, pages, available },
+                { new: true, runValidators: true });
 
-                // Update the existing book with the new data and save it to the database
-                Object.assign(book, { title, author, publicationYear, pages, available });
-                const updatedBook = await book.save();
-
+            // Check if the book was found and updated before sending a response
+            if (updatedBook) {
                 res.status(HTTP_STATUS.OK)
                     .json(createBaseResponse(req, res, "Book successfully updated", updatedBook));
             } else {
