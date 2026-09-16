@@ -1,9 +1,7 @@
 // This function retrieves the padding-bottom value of the <body> element from its computed CSS styles
 const getBodyPaddingFromCSS = () => {
     const bodyStyles = window.getComputedStyle(document.body);
-    const paddingBottom = Number.parseFloat(bodyStyles.getPropertyValue("padding-bottom"));
-
-    return paddingBottom;
+    return Number.parseFloat(bodyStyles.getPropertyValue("padding-bottom"));
 }
 
 // This function shows only the <p> elements that are fully visible within the viewport
