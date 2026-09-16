@@ -3,6 +3,7 @@ import express from "express"; // Express module
 import books from "../data/books.json" with { type: "json" }; // Import data from the JSON file
 import connectDatabase from "../config/dbConnect.js"; // Database connection module
 import Book from "../model/Book.js"; // Mongoose model for the Book schema
+import * as HTTP_STATUS from "./constants/httpStatus.js"; // HTTP status codes
 
 // Establish a connection to the database and handle connection events
 const connection = await connectDatabase();
@@ -16,12 +17,6 @@ connection.once("open", () => {
 // Create an instance of an Express application and add middleware for parsing JSON requests
 const app = express();
 app.use(express.json());
-
-// Define HTTP status codes
-const HTTP_OK = 200;
-const HTTP_CREATED = 201;
-const HTTP_BAD_REQUEST = 400;
-const HTTP_NOT_FOUND = 404;
 
 // Create a base response structure for API responses
 const createBaseResponse = (req, res, message, details) => ({
@@ -44,14 +39,14 @@ const isValidBook = (book) =>
 
 // Define a route for the root URL ("/")
 app.get("/", (req, res) => {
-    res.status(HTTP_OK)
+    res.status(HTTP_STATUS.OK)
         .json(createBaseResponse(req, res, "Welcome!"));
 });
 
 // Define a route for retrieving all books
 app.get("/books", async (req, res) => {
     const mongoBooks = await Book.find();
-    res.status(HTTP_OK)
+    res.status(HTTP_STATUS.OK)
         .json(createBaseResponse(req, res, "Books retrieved successfully", mongoBooks));
 });
 
@@ -62,7 +57,7 @@ app.get("/books/:id", (req, res) => {
 
     // Validate the book ID before proceeding
     if (!Number.isInteger(bookId)) {
-        return res.status(HTTP_BAD_REQUEST)
+        return res.status(HTTP_STATUS.BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
@@ -70,10 +65,10 @@ app.get("/books/:id", (req, res) => {
 
     // Check if the book exists before attempting to return it
     if (book) {
-        res.status(HTTP_OK)
+        res.status(HTTP_STATUS.OK)
             .json(createBaseResponse(req, res, "Book retrieved successfully", book));
     } else {
-        res.status(HTTP_NOT_FOUND)
+        res.status(HTTP_STATUS.NOT_FOUND)
             .json(createBaseResponse(req, res, "Book not found"));
     }
 });
@@ -82,7 +77,7 @@ app.get("/books/:id", (req, res) => {
 app.post("/books", (req, res) => {
     // Validate the incoming book data before proceeding
     if (!isValidBook(req.body)) {
-        return res.status(HTTP_BAD_REQUEST)
+        return res.status(HTTP_STATUS.BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book data"));
     }
 
@@ -93,7 +88,7 @@ app.post("/books", (req, res) => {
     // Add the new book to the books array
     books.push({ id: newBookId, ...newBook });
 
-    res.status(HTTP_CREATED)
+    res.status(HTTP_STATUS.CREATED)
         .json(createBaseResponse(req, res, "Book successfully created", books.at(-1)));
 });
 
@@ -104,7 +99,7 @@ app.put("/books/:id", (req, res) => {
 
     // Validate the book ID before proceeding with the update
     if (!Number.isInteger(bookId)) {
-        return res.status(HTTP_BAD_REQUEST)
+        return res.status(HTTP_STATUS.BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
@@ -113,7 +108,7 @@ app.put("/books/:id", (req, res) => {
     if (bookIndex !== -1) {
         // Validate the incoming book data before updating the existing book
         if (!isValidBook(req.body)) {
-            return res.status(HTTP_BAD_REQUEST)
+            return res.status(HTTP_STATUS.BAD_REQUEST)
                 .json(createBaseResponse(req, res, "Invalid book data"));
         }
 
@@ -121,10 +116,10 @@ app.put("/books/:id", (req, res) => {
         const { id: _id, ...book } = req.body;
         books[bookIndex] = { id: bookId, ...book };
 
-        res.status(HTTP_OK)
+        res.status(HTTP_STATUS.OK)
             .json(createBaseResponse(req, res, "Book successfully updated", books[bookIndex]));
     } else {
-        res.status(HTTP_NOT_FOUND)
+        res.status(HTTP_STATUS.NOT_FOUND)
             .json(createBaseResponse(req, res, "Book not found"));
     }
 });
@@ -135,7 +130,7 @@ app.delete("/books/:id", (req, res) => {
     const bookId = Number(req.params.id);
 
     if (!Number.isInteger(bookId)) {
-        return res.status(HTTP_BAD_REQUEST)
+        return res.status(HTTP_STATUS.BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
@@ -143,17 +138,17 @@ app.delete("/books/:id", (req, res) => {
     const bookIndex = books.findIndex(b => b.id === bookId);
     if (bookIndex !== -1) {
         const deletedBook = books.splice(bookIndex, 1)[0]; // [0] returns deletedBook instead of an array containing it
-        res.status(HTTP_OK)
+        res.status(HTTP_STATUS.OK)
             .json(createBaseResponse(req, res, "Book successfully deleted", deletedBook));
     } else {
-        res.status(HTTP_NOT_FOUND)
+        res.status(HTTP_STATUS.NOT_FOUND)
             .json(createBaseResponse(req, res, "Book not found"));
     }
 });
 
 // Handle 404 errors for undefined routes
 app.use((req, res) => {
-    res.status(HTTP_NOT_FOUND)
+    res.status(HTTP_STATUS.NOT_FOUND)
         .json(createBaseResponse(req, res, "Not Found"));
 });
 
