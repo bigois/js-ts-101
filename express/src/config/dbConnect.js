@@ -14,6 +14,7 @@ const connectDatabase = async () => {
         return mongoose.connection;
     } catch (err) {
         console.error("Database connection error:", err);
+        throw err;
     }
 };
 
