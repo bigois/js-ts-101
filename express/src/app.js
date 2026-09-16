@@ -1,9 +1,10 @@
 // Import necessary modules
-import express from "express";                            // Express module
-import connectDatabase from "./config/dbConnect.js";     // Database connection module
-import Book from "./model/Book.js";                      // Mongoose model for the Book schema
-import * as HTTP_STATUS from "./constants/httpStatus.js"; // HTTP status codes
-import mongoose from "mongoose";                          // Mongoose module for MongoDB interactions
+import express from "express";                                  // Express module
+import connectDatabase from "./config/dbConnect.js";            // Database connection module
+import Book from "./model/Book.js";                             // Mongoose model for the Book schema
+import * as HTTP_STATUS from "./constants/httpStatus.js";       // HTTP status codes
+import mongoose from "mongoose";                                // Mongoose module for MongoDB interactions
+import createBaseResponse from "./utils/createBaseResponse.js"; // Utility function to create a standardized response object
 
 // Establish a connection to the database and handle connection events
 const connection = await connectDatabase();
@@ -17,15 +18,6 @@ connection.once("open", () => {
 // Create an instance of an Express application and add middleware for parsing JSON requests
 const app = express();
 app.use(express.json());
-
-// Create a base response structure for API responses
-const createBaseResponse = (req, res, message, details) => ({
-    timestamp: new Date().toISOString(),
-    path: req.originalUrl,
-    status: res.statusCode,
-    message,
-    ...(details !== undefined && { details })
-});
 
 // Validate the structure and content of a book object
 const isValidBook = (book) => {
