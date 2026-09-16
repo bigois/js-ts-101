@@ -77,22 +77,17 @@ app.get("/books/:id", async (req, res) => {
 });
 
 // Define a route for creating a new book
-app.post("/books", (req, res) => {
+app.post("/books", async (req, res) => {
     // Validate the incoming book data before proceeding
     if (!isValidBook(req.body)) {
         return res.status(HTTP_STATUS.BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book data"));
     }
 
-    // Extract the new book data from the request body
-    const { id: _id, ...newBook } = req.body;
-    const newBookId = Math.max(0, ...books.map(book => book.id)) + 1;
-
-    // Add the new book to the books array
-    books.push({ id: newBookId, ...newBook });
+    const book = await Book.create(req.body);
 
     res.status(HTTP_STATUS.CREATED)
-        .json(createBaseResponse(req, res, "Book successfully created", books.at(-1)));
+        .json(createBaseResponse(req, res, "Book successfully created", book));
 });
 
 // Define a route for updating an existing book by its ID
