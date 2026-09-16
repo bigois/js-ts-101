@@ -132,19 +132,19 @@ app.put("/books/:id", async (req, res) => {
 });
 
 // Define a route for deleting an existing book by its ID
-app.delete("/books/:id", (req, res) => {
-    // Get the book index by its ID from the books array
-    const bookId = Number(req.params.id);
+app.delete("/books/:id", async (req, res) => {
+    // Extract the book ID from the request parameters
+    const bookId = req.params.id;
 
-    if (!Number.isInteger(bookId)) {
+    // Validate the book ID before proceeding
+    if (!mongoose.isObjectIdOrHexString(req.params.id)) {
         return res.status(HTTP_STATUS.BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
     // Check if the book exists before attempting to delete it
-    const bookIndex = books.findIndex(b => b.id === bookId);
-    if (bookIndex !== -1) {
-        const deletedBook = books.splice(bookIndex, 1)[0]; // [0] returns deletedBook instead of an array containing it
+    const deletedBook = await Book.findByIdAndDelete(bookId);
+    if (deletedBook) {
         res.status(HTTP_STATUS.OK)
             .json(createBaseResponse(req, res, "Book successfully deleted", deletedBook));
     } else {
