@@ -1,10 +1,16 @@
-// Import the Express application instance from the app module
-import app from "./src/app.js";
+// Import necessary modules
+import "dotenv/config"; // Load environment variables from a .env file
+import app from "./src/app.js"; // Express application instance from the app module
 
 // Define the port number for the server to listen on
-const PORT = 3000;
+const PORT = process.env.PORT;
 
-// Start the server and listen on port 3000
+// Check if the PORT environment variable is defined, and throw an error if it is not
+if (!PORT) {
+    throw new Error("PORT environment variable is not defined");
+}
+
+// Start the server and listen for incoming requests on the specified port
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}/`);
 });
