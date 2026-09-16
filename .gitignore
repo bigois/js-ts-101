@@ -1,5 +1,6 @@
 *.code-workspace
-.idea/**
-.vscode/**
-*/package-lock.json
-*/node_modules/**
+.idea/*
+.vscode/*
+package-lock.json
+*/node_modules/*
+node_modules/*
