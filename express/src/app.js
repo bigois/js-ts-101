@@ -5,6 +5,7 @@ import Book from "./model/Book.js";                             // Mongoose mode
 import * as HTTP_STATUS from "./constants/httpStatus.js";       // HTTP status codes
 import mongoose from "mongoose";                                // Mongoose module for MongoDB interactions
 import createBaseResponse from "./utils/createBaseResponse.js"; // Utility function to create a standardized response object
+import validateBook from "./middleware/validateBook.js";        // Middleware for validating book data in requests
 
 // Establish a connection to the database and handle connection events
 const connection = await connectDatabase();
@@ -18,17 +19,6 @@ connection.once("open", () => {
 // Create an instance of an Express application and add middleware for parsing JSON requests
 const app = express();
 app.use(express.json());
-
-// Validate the structure and content of a book object
-const isValidBook = (book) => {
-    return book &&
-    typeof book === "object" && !Array.isArray(book) &&
-    typeof book.title === "string" && book.title.trim().length > 0 &&
-    typeof book.author === "string" && book.author.trim().length > 0 &&
-    Number.isInteger(book.publicationYear) && book.publicationYear > 0 &&
-    Number.isInteger(book.pages) && book.pages > 0 &&
-    typeof book.available === "boolean";
-};
 
 // Define a route for the root URL ("/")
 app.get("/", (req, res) => {
@@ -68,13 +58,7 @@ app.get("/books/:id", async (req, res) => {
 });
 
 // Define a route for creating a new book
-app.post("/books", async (req, res) => {
-    // Validate the incoming book data before proceeding
-    if (!isValidBook(req.body)) {
-        return res.status(HTTP_STATUS.BAD_REQUEST)
-            .json(createBaseResponse(req, res, "Invalid book data"));
-    }
-
+app.post("/books", validateBook, async (req, res) => {
     // Extract the book data from the request body, excluding the ID since it should not be updated directly
     const { title, author, publicationYear, pages, available } = req.body;
 
@@ -85,7 +69,7 @@ app.post("/books", async (req, res) => {
 });
 
 // Define a route for updating an existing book by its ID
-app.put("/books/:id", async (req, res) => {
+app.put("/books/:id", validateBook, async (req, res) => {
     // Extract the book ID from the request parameters
     const bookId = req.params.id;
 
@@ -104,12 +88,6 @@ app.put("/books/:id", async (req, res) => {
      available: boolean
      }> | null} */ await Book.findById(bookId);
     if (book) {
-        // Validate the incoming book data before updating the existing book
-        if (!isValidBook(req.body)) {
-            return res.status(HTTP_STATUS.BAD_REQUEST)
-                .json(createBaseResponse(req, res, "Invalid book data"));
-        }
-
         // Extract the book data from the request body, excluding the ID since it should not be updated directly
         const { title, author, publicationYear, pages, available } = req.body;
 
