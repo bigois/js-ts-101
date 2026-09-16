@@ -1,0 +1,89 @@
+// Import necessary modules
+import Book from "../model/Book.js";                             // Mongoose model for the Book schema
+import * as HTTP_STATUS from "../constants/httpStatus.js";       // HTTP status codes
+import createBaseResponse from "../utils/createBaseResponse.js"; // Utility function to create a standardized response object
+
+// Define the BookController class to handle book-related operations
+class BookController {
+    // Get all books from the database
+    static async findAll(req, res) {
+        const book = await Book.find();
+        res.status(HTTP_STATUS.OK)
+            .json(createBaseResponse(req, res, "Books retrieved successfully", book));
+    }
+
+    // Get a single book by its ID
+    static async findById(req, res) {
+        // Try to find the corresponding book in the database
+        const bookId = req.params.id;
+        const book = await Book.findById(bookId);
+
+        // Check if the book exists before attempting to return it
+        if (book) {
+            res.status(HTTP_STATUS.OK)
+                .json(createBaseResponse(req, res, "Book retrieved successfully", book));
+        } else {
+            res.status(HTTP_STATUS.NOT_FOUND)
+                .json(createBaseResponse(req, res, "Book not found"));
+        }
+    }
+
+    // Create a new book in the database
+    static async create(req, res) {
+        // Extract the book data from the request body, excluding the ID since it should not be updated directly
+        const { title, author, publicationYear, pages, available } = req.body;
+
+        // Create a new book in the database using the validated data from the request body
+        const createdBook = await Book.create({ title, author, publicationYear, pages, available });
+        res.status(HTTP_STATUS.CREATED)
+            .json(createBaseResponse(req, res, "Book successfully created", createdBook));
+    }
+
+    // Update an existing book in the database
+    static async update(req, res) {
+        // Try to find the corresponding book in the database
+        const bookId = req.params.id;
+        const book = /** @type {import("mongoose").HydratedDocument<{
+         title: string,
+         author: string,
+         publicationYear: number,
+         pages: number,
+         available: boolean
+         }> | null} */ await Book.findById(bookId);
+
+        // Check if the book exists before attempting to update it
+        if (book) {
+            // Extract the book data from the request body, excluding the ID since it should not be updated directly
+            const { title, author, publicationYear, pages, available } = req.body;
+
+            // Update the existing book with the new data and save it to the database
+            Object.assign(book, { title, author, publicationYear, pages, available });
+            const updatedBook = await book.save();
+
+            res.status(HTTP_STATUS.OK)
+                .json(createBaseResponse(req, res, "Book successfully updated", updatedBook));
+        } else {
+            res.status(HTTP_STATUS.NOT_FOUND)
+                .json(createBaseResponse(req, res, "Book not found"));
+        }
+    }
+
+    // Delete a book from the database
+    static async delete(req, res) {
+        // Try to find and delete the corresponding book in the database
+        const bookId = req.params.id;
+        const deletedBook = await Book.findByIdAndDelete(bookId);
+
+        // Check if the book was found and deleted before sending a response
+        if (deletedBook) {
+            res.status(HTTP_STATUS.OK)
+                .json(createBaseResponse(req, res, "Book successfully deleted", deletedBook));
+        } else {
+            res.status(HTTP_STATUS.NOT_FOUND)
+                .json(createBaseResponse(req, res, "Book not found"));
+        }
+    }
+}
+
+// Export the BookController class for use in other parts of the application
+export default BookController;
