@@ -6,8 +6,9 @@ import mongoose from "mongoose"; // Mongoose module
  * @typedef {Object} BookData
  * @property {string} title
  * @property {string} author
- * @property {Date} publishedDate
+ * @property {Date} publicationYear
  * @property {number} pages
+ * @property {boolean} available
  */
 const bookSchema = new mongoose.Schema({
     title: {
@@ -18,12 +19,16 @@ const bookSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    publishedDate: {
+    publicationYear: {
         type: Date,
         required: true
     },
     pages: {
         type: Number,
+        required: true
+    },
+    available: {
+        type: Boolean,
         required: true
     }
 });
