@@ -1,7 +1,7 @@
 // Import necessary modules
 import express from "express";                            // Express module
-import connectDatabase from "../config/dbConnect.js";     // Database connection module
-import Book from "../model/Book.js";                      // Mongoose model for the Book schema
+import connectDatabase from "./config/dbConnect.js";     // Database connection module
+import Book from "./model/Book.js";                      // Mongoose model for the Book schema
 import * as HTTP_STATUS from "./constants/httpStatus.js"; // HTTP status codes
 import mongoose from "mongoose";                          // Mongoose module for MongoDB interactions
 
