@@ -2,9 +2,10 @@
 import Book from "../model/Book.js";                             // Mongoose model for the Book schema
 import * as HTTP_STATUS from "../constants/httpStatus.js";       // HTTP status codes
 import createBaseResponse from "../utils/createBaseResponse.js"; // Database connection module
+import mongoose from "mongoose";                                 // Mongoose module for MongoDB interactions
 
 // Middleware function to validate the structure and content of a book object
-const validateBook = async (req, res, next) => {
+const validateObject = async (req, res, next) => {
     // Check if the request body is valid and contains the necessary fields
     if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
         return res.status(HTTP_STATUS.BAD_REQUEST)
@@ -22,5 +23,17 @@ const validateBook = async (req, res, next) => {
     }
 };
 
-// Export the validateBook middleware function for use in other parts of the application
-export default validateBook;
+// Middleware function to validate the book ID in the request parameters
+const validateBookId = (req, res, next) => {
+    // Check if the book ID is a valid ObjectId or hex string
+    if (!mongoose.isObjectIdOrHexString(req.params.id)) {
+        return res.status(HTTP_STATUS.BAD_REQUEST)
+            .json(createBaseResponse(req, res, "Invalid book ID"));
+    }
+
+    // If the book ID is valid, proceed to the next middleware or route handler
+    next();
+};
+
+// Export the middleware functions for use in other parts of the application
+export { validateObject, validateBookId };

@@ -1,11 +1,10 @@
 // Import necessary modules
-import express from "express";                                  // Express module
-import connectDatabase from "./config/dbConnect.js";            // Database connection module
-import Book from "./model/Book.js";                             // Mongoose model for the Book schema
-import * as HTTP_STATUS from "./constants/httpStatus.js";       // HTTP status codes
-import mongoose from "mongoose";                                // Mongoose module for MongoDB interactions
-import createBaseResponse from "./utils/createBaseResponse.js"; // Utility function to create a standardized response object
-import validateBook from "./middleware/validateBook.js";        // Middleware for validating book data in requests
+import express from "express";                                   // Express module
+import connectDatabase from "./config/dbConnect.js";             // Database connection module
+import Book from "./model/Book.js";                              // Mongoose model for the Book schema
+import * as HTTP_STATUS from "./constants/httpStatus.js";        // HTTP status codes
+import createBaseResponse from "./utils/createBaseResponse.js";  // Utility function to create a standardized response object
+import * as BOOK_VALIDATION from "./middleware/validateBook.js"; // Middleware for validating book data in requests
 
 // Establish a connection to the database and handle connection events
 const connection = await connectDatabase();
@@ -35,16 +34,9 @@ app.get("/books", async (req, res) => {
 });
 
 // Define a route for retrieving a single book by its ID
-app.get("/books/:id", async (req, res) => {
-    // Extract the book ID from the request parameters
+app.get("/books/:id", BOOK_VALIDATION.validateBookId, async (req, res) => {
+    // Try to find the corresponding book in the database
     const bookId = req.params.id;
-
-    // Validate the book ID before proceeding
-    if (!mongoose.isObjectIdOrHexString(req.params.id)) {
-        return res.status(HTTP_STATUS.BAD_REQUEST)
-            .json(createBaseResponse(req, res, "Invalid book ID"));
-    }
-
     const book = await Book.findById(bookId);
 
     // Check if the book exists before attempting to return it
@@ -58,7 +50,7 @@ app.get("/books/:id", async (req, res) => {
 });
 
 // Define a route for creating a new book
-app.post("/books", validateBook, async (req, res) => {
+app.post("/books", BOOK_VALIDATION.validateObject, async (req, res) => {
     // Extract the book data from the request body, excluding the ID since it should not be updated directly
     const { title, author, publicationYear, pages, available } = req.body;
 
@@ -69,17 +61,9 @@ app.post("/books", validateBook, async (req, res) => {
 });
 
 // Define a route for updating an existing book by its ID
-app.put("/books/:id", validateBook, async (req, res) => {
-    // Extract the book ID from the request parameters
+app.put("/books/:id", BOOK_VALIDATION.validateBookId, BOOK_VALIDATION.validateObject, async (req, res) => {
+    // Try to find the corresponding book in the database
     const bookId = req.params.id;
-
-    // Validate the book ID before proceeding
-    if (!mongoose.isObjectIdOrHexString(req.params.id)) {
-        return res.status(HTTP_STATUS.BAD_REQUEST)
-            .json(createBaseResponse(req, res, "Invalid book ID"));
-    }
-
-    // Check if the book exists before attempting to update it
     const book = /** @type {import("mongoose").HydratedDocument<{
      title: string,
      author: string,
@@ -87,6 +71,8 @@ app.put("/books/:id", validateBook, async (req, res) => {
      pages: number,
      available: boolean
      }> | null} */ await Book.findById(bookId);
+
+    // Check if the book exists before attempting to update it
     if (book) {
         // Extract the book data from the request body, excluding the ID since it should not be updated directly
         const { title, author, publicationYear, pages, available } = req.body;
@@ -104,18 +90,12 @@ app.put("/books/:id", validateBook, async (req, res) => {
 });
 
 // Define a route for deleting an existing book by its ID
-app.delete("/books/:id", async (req, res) => {
-    // Extract the book ID from the request parameters
+app.delete("/books/:id", BOOK_VALIDATION.validateBookId, async (req, res) => {
+    // Try to find and delete the corresponding book in the database
     const bookId = req.params.id;
-
-    // Validate the book ID before proceeding
-    if (!mongoose.isObjectIdOrHexString(req.params.id)) {
-        return res.status(HTTP_STATUS.BAD_REQUEST)
-            .json(createBaseResponse(req, res, "Invalid book ID"));
-    }
-
-    // Check if the book exists before attempting to delete it
     const deletedBook = await Book.findByIdAndDelete(bookId);
+
+    // Check if the book was found and deleted before sending a response
     if (deletedBook) {
         res.status(HTTP_STATUS.OK)
             .json(createBaseResponse(req, res, "Book successfully deleted", deletedBook));
