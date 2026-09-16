@@ -1,10 +1,9 @@
 // Import necessary modules
-import express from "express";                                // Express module
-import books from "../data/books.json" with { type: "json" }; // Import data from the JSON file
-import connectDatabase from "../config/dbConnect.js";         // Database connection module
-import Book from "../model/Book.js";                          // Mongoose model for the Book schema
-import * as HTTP_STATUS from "./constants/httpStatus.js";     // HTTP status codes
-import mongoose from "mongoose";                              // Mongoose module for MongoDB interactions
+import express from "express";                            // Express module
+import connectDatabase from "../config/dbConnect.js";     // Database connection module
+import Book from "../model/Book.js";                      // Mongoose model for the Book schema
+import * as HTTP_STATUS from "./constants/httpStatus.js"; // HTTP status codes
+import mongoose from "mongoose";                          // Mongoose module for MongoDB interactions
 
 // Establish a connection to the database and handle connection events
 const connection = await connectDatabase();
