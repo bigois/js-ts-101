@@ -84,10 +84,13 @@ app.post("/books", async (req, res) => {
             .json(createBaseResponse(req, res, "Invalid book data"));
     }
 
-    const book = await Book.create(req.body);
+    // Extract the book data from the request body, excluding the ID since it should not be updated directly
+    const { title, author, publicationYear, pages, available } = req.body;
 
+    // Create a new book in the database using the validated data from the request body
+    const createdBook = await Book.create({ title, author, publicationYear, pages, available });
     res.status(HTTP_STATUS.CREATED)
-        .json(createBaseResponse(req, res, "Book successfully created", book));
+        .json(createBaseResponse(req, res, "Book successfully created", createdBook));
 });
 
 // Define a route for updating an existing book by its ID
