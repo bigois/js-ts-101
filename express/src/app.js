@@ -29,14 +29,15 @@ const createBaseResponse = (req, res, message, details) => ({
 });
 
 // Validate the structure and content of a book object
-const isValidBook = (book) =>
-    book &&
+const isValidBook = (book) => {
+    return book &&
     typeof book === "object" && !Array.isArray(book) &&
     typeof book.title === "string" && book.title.trim().length > 0 &&
     typeof book.author === "string" && book.author.trim().length > 0 &&
     Number.isInteger(book.publicationYear) && book.publicationYear > 0 &&
     Number.isInteger(book.pages) && book.pages > 0 &&
     typeof book.available === "boolean";
+};
 
 // Define a route for the root URL ("/")
 app.get("/", (req, res) => {
