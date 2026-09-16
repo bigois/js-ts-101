@@ -46,9 +46,10 @@ app.get("/", (req, res) => {
 
 // Define a route for retrieving all books
 app.get("/books", async (req, res) => {
-    const mongoBooks = await Book.find();
+    // Get all books from the database
+    const book = await Book.find({}, null);
     res.status(HTTP_STATUS.OK)
-        .json(createBaseResponse(req, res, "Books retrieved successfully", mongoBooks));
+        .json(createBaseResponse(req, res, "Books retrieved successfully", book));
 });
 
 // Define a route for retrieving a single book by its ID
