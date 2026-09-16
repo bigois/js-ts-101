@@ -53,17 +53,17 @@ app.get("/books", async (req, res) => {
 });
 
 // Define a route for retrieving a single book by its ID
-app.get("/books/:id", (req, res) => {
-    // Get the book by its ID from the books array
-    const bookId = Number(req.params.id);
+app.get("/books/:id", async (req, res) => {
+    // Extract the book ID from the request parameters
+    const bookId = req.params.id;
 
     // Validate the book ID before proceeding
-    if (!Number.isInteger(bookId)) {
+    if (!mongoose.isObjectIdOrHexString(req.params.id)) {
         return res.status(HTTP_STATUS.BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
-    const book = books.find(b => b.id === bookId);
+    const book = await Book.findOne({ _id: bookId }, null);
 
     // Check if the book exists before attempting to return it
     if (book) {
