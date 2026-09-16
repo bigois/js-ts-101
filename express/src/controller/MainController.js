@@ -6,14 +6,24 @@ import createBaseResponse from "../utils/createBaseResponse.js"; // Utility func
 class MainController {
     // Handle the root URL ("/") and return a welcome message
     static async getHome(req, res) {
-        res.status(HTTP_STATUS.OK)
-            .json(createBaseResponse(req, res, "Welcome!"));
+        try {
+            res.status(HTTP_STATUS.OK)
+                .json(createBaseResponse(req, res, "Welcome!"));
+        } catch (error) {
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+                .json(createBaseResponse(req, res, "Internal server error"));
+        }
     }
 
     // Handle undefined routes and return a 404 Not Found response
     static async getNotFound(req, res) {
-        res.status(HTTP_STATUS.NOT_FOUND)
-            .json(createBaseResponse(req, res, "Not Found"));
+        try {
+            res.status(HTTP_STATUS.NOT_FOUND)
+                .json(createBaseResponse(req, res, "Not Found"));
+        } catch (error) {
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+                .json(createBaseResponse(req, res, "Internal server error"));
+        }
     }
 }
 
