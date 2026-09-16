@@ -1,9 +1,7 @@
 // Import necessary modules
-import express from "express";                                   // Express module
-import connectDatabase from "./config/dbConnect.js";             // Database connection module
-import * as BOOK_VALIDATION from "./middleware/validateBook.js"; // Middleware for validating book data in requests
-import BookController from "./controller/BookController.js";     // Controller for handling book-related operations
-import MainController from "./controller/MainController.js";     // Controller for handling main application routes
+import express from "express";                       // Express module
+import connectDatabase from "./config/dbConnect.js"; // Database connection module
+import routes from "./routes/index.js";              // Import routes module
 
 // Establish a connection to the database and handle connection events
 const connection = await connectDatabase();
@@ -14,30 +12,12 @@ connection.once("open", () => {
     console.log("Database connection established successfully");
 });
 
-// Create an instance of an Express application and add middleware for parsing JSON requests
+// Create an instance of an Express application
 const app = express();
+
+// Middleware to parse incoming JSON requests and use the defined routes
 app.use(express.json());
-
-// Define a route for the root URL ("/")
-app.get("/", MainController.getHome);
-
-// Define a route for retrieving all books
-app.get("/books", BookController.findAll);
-
-// Define a route for retrieving a single book by its ID
-app.get("/books/:id", BOOK_VALIDATION.validateBookId, BookController.findById);
-
-// Define a route for creating a new book
-app.post("/books", BOOK_VALIDATION.validateObject, BookController.create);
-
-// Define a route for updating an existing book by its ID
-app.put("/books/:id", BOOK_VALIDATION.validateBookId, BOOK_VALIDATION.validateObject, BookController.update);
-
-// Define a route for deleting an existing book by its ID
-app.delete("/books/:id", BOOK_VALIDATION.validateBookId, BookController.delete);
-
-// Handle 404 errors for undefined routes
-app.use(MainController.getNotFound);
+app.use(routes);
 
 // Export the Express application instance for use in other modules
 export default app;
