@@ -102,7 +102,13 @@ app.put("/books/:id", async (req, res) => {
     }
 
     // Check if the book exists before attempting to update it
-    const book = await Book.findById(bookId);
+    const book = /** @type {import("mongoose").HydratedDocument<{
+     title: string,
+     author: string,
+     publicationYear: number,
+     pages: number,
+     available: boolean
+     }> | null} */ await Book.findById(bookId);
     if (book) {
         // Validate the incoming book data before updating the existing book
         if (!isValidBook(req.body)) {
