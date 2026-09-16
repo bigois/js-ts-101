@@ -31,6 +31,8 @@ const bookSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     }
+}, {
+    versionKey: false
 });
 
 // Create a Mongoose model for the Book schema and export it
