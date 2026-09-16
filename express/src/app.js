@@ -91,19 +91,19 @@ app.post("/books", async (req, res) => {
 });
 
 // Define a route for updating an existing book by its ID
-app.put("/books/:id", (req, res) => {
-    // Get the book index by its ID from the books array
-    const bookId = Number(req.params.id);
+app.put("/books/:id", async (req, res) => {
+    // Extract the book ID from the request parameters
+    const bookId = req.params.id;
 
-    // Validate the book ID before proceeding with the update
-    if (!Number.isInteger(bookId)) {
+    // Validate the book ID before proceeding
+    if (!mongoose.isObjectIdOrHexString(req.params.id)) {
         return res.status(HTTP_STATUS.BAD_REQUEST)
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
     // Check if the book exists before attempting to update it
-    const bookIndex = books.findIndex(b => b.id === bookId);
-    if (bookIndex !== -1) {
+    const book = await Book.findById(bookId);
+    if (book) {
         // Validate the incoming book data before updating the existing book
         if (!isValidBook(req.body)) {
             return res.status(HTTP_STATUS.BAD_REQUEST)
@@ -111,11 +111,14 @@ app.put("/books/:id", (req, res) => {
         }
 
         // Extract the book data from the request body, excluding the ID since it should not be updated directly
-        const { id: _id, ...book } = req.body;
-        books[bookIndex] = { id: bookId, ...book };
+        const { title, author, publicationYear, pages, available } = req.body;
+
+        // Update the existing book with the new data and save it to the database
+        Object.assign(book, { title, author, publicationYear, pages, available });
+        const updatedBook = await book.save();
 
         res.status(HTTP_STATUS.OK)
-            .json(createBaseResponse(req, res, "Book successfully updated", books[bookIndex]));
+            .json(createBaseResponse(req, res, "Book successfully updated", updatedBook));
     } else {
         res.status(HTTP_STATUS.NOT_FOUND)
             .json(createBaseResponse(req, res, "Book not found"));
