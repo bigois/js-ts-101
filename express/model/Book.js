@@ -2,6 +2,13 @@
 import mongoose from "mongoose"; // Mongoose module
 
 // Book schema definition for MongoDB using Mongoose
+/**
+ * @typedef {Object} BookData
+ * @property {string} title
+ * @property {string} author
+ * @property {Date} publishedDate
+ * @property {number} pages
+ */
 const bookSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -22,5 +29,6 @@ const bookSchema = new mongoose.Schema({
 });
 
 // Create a Mongoose model for the Book schema and export it
+/** @type {mongoose.Model<BookData>} */
 const Book = mongoose.model("Book", bookSchema);
 export default Book;

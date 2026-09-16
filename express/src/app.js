@@ -47,7 +47,7 @@ app.get("/", (req, res) => {
 // Define a route for retrieving all books
 app.get("/books", async (req, res) => {
     // Get all books from the database
-    const book = await Book.find({}, null);
+    const book = await Book.find();
     res.status(HTTP_STATUS.OK)
         .json(createBaseResponse(req, res, "Books retrieved successfully", book));
 });
@@ -63,7 +63,7 @@ app.get("/books/:id", async (req, res) => {
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
-    const book = await Book.findOne({ _id: bookId }, null);
+    const book = await Book.findOne({ _id: bookId });
 
     // Check if the book exists before attempting to return it
     if (book) {
