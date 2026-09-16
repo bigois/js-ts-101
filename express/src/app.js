@@ -64,7 +64,7 @@ app.get("/books/:id", async (req, res) => {
             .json(createBaseResponse(req, res, "Invalid book ID"));
     }
 
-    const book = await Book.findOne({ _id: bookId });
+    const book = await Book.findById(bookId);
 
     // Check if the book exists before attempting to return it
     if (book) {
