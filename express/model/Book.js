@@ -6,7 +6,7 @@ import mongoose from "mongoose"; // Mongoose module
  * @typedef {Object} BookData
  * @property {string} title
  * @property {string} author
- * @property {Date} publicationYear
+ * @property {number} publicationYear
  * @property {number} pages
  * @property {boolean} available
  */
@@ -20,7 +20,7 @@ const bookSchema = new mongoose.Schema({
         required: true
     },
     publicationYear: {
-        type: Date,
+        type: Number,
         required: true
     },
     pages: {
