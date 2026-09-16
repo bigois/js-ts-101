@@ -1,10 +1,9 @@
 // Import necessary modules
 import express from "express";                                   // Express module
 import connectDatabase from "./config/dbConnect.js";             // Database connection module
-import * as HTTP_STATUS from "./constants/httpStatus.js";        // HTTP status codes
-import createBaseResponse from "./utils/createBaseResponse.js";  // Utility function to create a standardized response object
 import * as BOOK_VALIDATION from "./middleware/validateBook.js"; // Middleware for validating book data in requests
 import BookController from "./controller/BookController.js";     // Controller for handling book-related operations
+import MainController from "./controller/MainController.js";     // Controller for handling main application routes
 
 // Establish a connection to the database and handle connection events
 const connection = await connectDatabase();
@@ -20,10 +19,7 @@ const app = express();
 app.use(express.json());
 
 // Define a route for the root URL ("/")
-app.get("/", (req, res) => {
-    res.status(HTTP_STATUS.OK)
-        .json(createBaseResponse(req, res, "Welcome!"));
-});
+app.get("/", MainController.getHome);
 
 // Define a route for retrieving all books
 app.get("/books", BookController.findAll);
@@ -41,10 +37,7 @@ app.put("/books/:id", BOOK_VALIDATION.validateBookId, BOOK_VALIDATION.validateOb
 app.delete("/books/:id", BOOK_VALIDATION.validateBookId, BookController.delete);
 
 // Handle 404 errors for undefined routes
-app.use((req, res) => {
-    res.status(HTTP_STATUS.NOT_FOUND)
-        .json(createBaseResponse(req, res, "Not Found"));
-});
+app.use(MainController.getNotFound);
 
 // Export the Express application instance for use in other modules
 export default app;
