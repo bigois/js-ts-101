@@ -1,7 +1,7 @@
 // Create a base response structure for API responses
 const createBaseResponse = (req, res, message, details) => ({
     timestamp: new Date().toISOString(),
-    path: req.originalUrl,
+    endpoint: req.method + ' ' + req.originalUrl,
     status: res.statusCode,
     message,
     ...(details !== undefined && { details })
