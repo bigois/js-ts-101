@@ -55,7 +55,7 @@ class BookController {
     }
 
     // Update an existing book in the database
-    static async update(req, res) {
+    static async fullUpdate(req, res) {
         try {
             // Extract the book data from the request body, excluding the ID since it should not be updated directly
             const bookId = req.params.id;
@@ -63,6 +63,28 @@ class BookController {
 
             // Try to find and update the corresponding book in the database
             const updatedBook = await Book.findByIdAndUpdate(bookId, { title, author, publicationYear, pages, available },
+                { new: true, runValidators: true });
+
+            // Check if the book was found and updated before sending a response
+            if (updatedBook) {
+                res.status(HTTP_STATUS.OK)
+                    .json(createBaseResponse(req, res, "Book successfully updated", updatedBook));
+            } else {
+                res.status(HTTP_STATUS.NOT_FOUND)
+                    .json(createBaseResponse(req, res, "Book not found"));
+            }
+        } catch (error) {
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+                .json(createBaseResponse(req, res, "Internal server error"));
+        }
+    }
+
+    // Partially update an existing book in the database
+    static async partialUpdate(req, res) {
+        try {
+            // Update only the fields validated and sent in the request body
+            const bookId = req.params.id;
+            const updatedBook = await Book.findByIdAndUpdate(bookId, { $set: req.body },
                 { new: true, runValidators: true });
 
             // Check if the book was found and updated before sending a response
