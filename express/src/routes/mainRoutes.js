@@ -7,6 +7,7 @@ const router = express.Router();
 
 // Define routes for
 router.get("/", MainController.getHome);
+router.get("/query", MainController.getQueryParameters);
 router.use(MainController.getNotFound);
 
 // Export the router instance for use in other modules
