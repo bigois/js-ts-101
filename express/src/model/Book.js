@@ -37,5 +37,5 @@ const bookSchema = new mongoose.Schema({
 
 // Create a Mongoose model for the Book schema and export it
 /** @type {mongoose.Model<BookData>} */
-const Book = mongoose.model("Book", bookSchema);
+const Book = mongoose.model("Book", bookSchema, "books");
 export default Book;
