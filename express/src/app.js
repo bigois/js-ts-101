@@ -15,8 +15,9 @@ connection.once("open", () => {
 // Create an instance of an Express application
 const app = express();
 
-// Middleware to parse incoming JSON requests and use the defined routes
+// Middleware to parse incoming JSON requests, use the defined routes, and serve static files from the "public" directory
 app.use(express.json());
+app.use(express.static("public"));
 app.use(routes);
 
 // Export the Express application instance for use in other modules
